@@ -273,6 +273,42 @@ namespace Avalonia.OpenGL
         [GetProcAddress("glBindBuffer")]
         public partial void BindBuffer(int target, int buffer);
 
+        /*
+         *
+         * Added Func 
+         *
+         *
+         */
+
+        [GetProcAddress("glBindBufferBase")]
+        public partial void BindBufferBase(int target, int index, int buffer);
+
+        [GetProcAddress("glBlendFunc")]
+        public partial void BlendFunc(int sFactor, int dFactor);
+
+        [GetProcAddress("glBufferSubData")]
+        public partial void BufferSubData(int target, IntPtr offser, UIntPtr size, IntPtr data);
+
+        [GetProcAddress("glDetachShader")]
+        public partial void DetachShader(int program, int shader);
+
+        [GetProcAddress("glDisable")]
+        public partial void Disable(int what);
+
+        [GetProcAddress("glDrawBuffers")]
+        public partial void DrawBuffers(int len, IntPtr buffers);
+
+        [GetProcAddress("glDrawElementsInstanced")]
+        public partial void DrawElementsInstanced(int mode, int count, int type, IntPtr indices, int instanceCount);
+        
+        [GetProcAddress("glGenerateMipmap")]
+        public partial void GenerateMipmap(int target);
+        /*
+         * 
+         * END
+         * 
+         */
+
         [GetProcAddress("glBufferData")]
         public partial void BufferData(int target, IntPtr size, IntPtr data, int usage);
 

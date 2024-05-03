@@ -211,7 +211,24 @@ namespace Avalonia.Controls
         private void InitializeData(bool showsPreview)
         {
             // If not in a grid or can't resize, do nothing.
-            if (Parent is Grid grid)
+            Grid? grid = null;
+            Control? gridChild = null;
+            if (Parent is Grid)
+            {
+                grid = Parent as Grid;
+                gridChild = this;
+            }
+            else
+            {
+                Visual? visual = this;
+                while (visual.VisualParent is not null and not Grid)
+                {
+                    visual = visual.VisualParent;
+                }
+                grid = visual.VisualParent as Grid;
+                gridChild = visual as Control;
+            }
+            if (grid != null)
             {
                 GridResizeDirection resizeDirection = GetEffectiveResizeDirection();
 
@@ -219,6 +236,7 @@ namespace Avalonia.Controls
                 _resizeData = new ResizeData
                 {
                     Grid = grid,
+                    GridChild = gridChild!,
                     ShowsPreview = showsPreview,
                     ResizeDirection = resizeDirection,
                     SplitterLength = Math.Min(Bounds.Width, Bounds.Height),
@@ -244,13 +262,13 @@ namespace Avalonia.Controls
         /// </summary>
         private bool SetupDefinitionsToResize()
         {
-            int gridSpan = GetValue(_resizeData!.ResizeDirection == GridResizeDirection.Columns ?
+            int gridSpan = _resizeData!.GridChild!.GetValue(_resizeData.ResizeDirection == GridResizeDirection.Columns ?
                 Grid.ColumnSpanProperty :
                 Grid.RowSpanProperty);
 
             if (gridSpan == 1)
             {
-                var splitterIndex = GetValue(_resizeData.ResizeDirection == GridResizeDirection.Columns ?
+                var splitterIndex = _resizeData.GridChild.GetValue(_resizeData.ResizeDirection == GridResizeDirection.Columns ?
                     Grid.ColumnProperty :
                     Grid.RowProperty);
 
@@ -784,6 +802,9 @@ namespace Avalonia.Controls
 
             // The grid to Resize.
             public Grid? Grid;
+
+            //Child of the grid that is the GridSplitter itself of its ancestor.
+            public Control? GridChild;
 
             // Cache of Resize Direction and Behavior.
             public GridResizeDirection ResizeDirection;
